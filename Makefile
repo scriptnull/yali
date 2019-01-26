@@ -1,4 +1,4 @@
-.PHONY: run app
+.PHONY: run build clean app ast
 
 run:
 	bazel build //:yali --verbose_failures && ./bazel-bin/yali
@@ -11,3 +11,6 @@ clean:
 
 app:
 	bazel build //app:app
+
+ast:
+	bazel build //ast:ast
