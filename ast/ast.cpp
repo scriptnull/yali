@@ -87,72 +87,107 @@ typedef Singleton<SymTable> SymbolTable;
 std::unique_ptr<AbstractSyntaxTree> parse(std::istream & stream) {
     std::unique_ptr<AbstractSyntaxTree> ast{new AbstractSyntaxTree};
 
+    std::stack<AstNode*> call_stack;
+    std::stack<SymType> sym_stack;
+
+    sym_stack.push(blank);
+
     char c;
-    std::string curr_func;
-    std::string curr_arg;
-    SymType last_symbol = SymType::blank;
+    char prev;
+    AstNode* curr = nullptr;
+    while (true) {
+        stream.get(c);
 
-    std::stack<char> src_stack;
-
-    AstNode* curr_node;
-
-    while (stream.get(c)) {
-        switch (c) {
-            case '(':
-                src_stack.push(c);
-                curr_func = "";
-                last_symbol = SymType::open_brac;
-                break;
-            case ')':
-                if (src_stack.empty() || src_stack.top() != '(')
-                    throw std::runtime_error("Invalid Syntax: Could not find matching braces");
-                src_stack.pop();
-
-                if (last_symbol == func_name || last_symbol == func_arg) {
-                    AstNode* arg_node = new AstNode{AstNodeType::Data, curr_arg};
-                    curr_node->children.push_back(arg_node);
-                    curr_arg = "";
+        switch (sym_stack.top()) {
+            case blank:
+                if (c == '(') {
+                    sym_stack.push(open_brac);
+                    break;
+                }
+                
+                // fallthrough
+            case open_brac:
+                if (curr == nullptr) {
+                    curr = new AstNode{AstNodeType::Func, std::string{c}};
+                    ast->root = curr;
+                    break;
                 }
 
-                last_symbol = SymType::close_brac;
-                break;
-            default:
-                std::cout << 
-                    "c = " << c << "\n" <<
-                    "curr_func = " << curr_func << "\n" <<
-                    "curr_arg = " << curr_arg << "\n" <<
-                    "last_symbol = " << last_symbol << "\n";
-
-                if (last_symbol == SymType::blank || last_symbol == SymType::open_brac) {
-                    if (c != ' ') {
-                        curr_func += c;
-                        break;
-                    } else {
-                        // check if func exists 
-                        if (SymbolTable::instance().has_func(curr_func)) {
-                            AstNode* node = new AstNode{AstNodeType::Func, curr_func};
-
-                            if (ast->root == nullptr) {
-                                ast->root = node;
-                                curr_node = node;
-                            }
-
-                            last_symbol = SymType::func_name;
-                        }
-                    }
-                } else if (last_symbol == SymType::func_name || last_symbol == SymType::func_arg) {
-                    if (c != ' ') {
-                        curr_arg += c;
-                        break;
-                    } else {
-                        AstNode* arg_node = new AstNode{AstNodeType::Data, curr_arg};
-                        curr_node->children.push_back(arg_node);
-
-                        last_symbol = SymType::func_arg;
-                        curr_arg = "";
-                    }
+                if (c == ' ') {
+                    call_stack.push(curr);
+                    sym_stack.push(func_name);
+                    curr = nullptr;
+                    break;
                 }
+
+                curr->value += c;
+                break;
+            case func_name:
+                if (curr == nullptr) {
+                    curr = new AstNode{AstNodeType::Data, std::string{c}};
+                    break;
+                }
+
+                if (c == ' ') {
+                    auto caller = call_stack.top();
+                    caller->children.push_back(curr);
+                    sym_stack.push(func_arg);
+                    curr = nullptr;
+                    break;
+                }
+                
+                curr->value += c;
+                break;
+            case func_arg:
+                std::cout << "c = " << c << " eof = " << stream.eof() << std::endl;
+                if (curr == nullptr) {
+                    curr = new AstNode{AstNodeType::Data, std::string{c}};
+                    break;
+                }
+
+                if (c == ')') {
+                    // Remove till matching bracket
+                    while (!sym_stack.empty() && (sym_stack.top() != open_brac)) {
+                        sym_stack.pop();
+                    }
+
+                    // Remove open_brac
+                    if (!sym_stack.empty())
+                        sym_stack.pop();
+                }
+
+                if (stream.eof()) {
+                    if (prev == ' ' || prev == ')')
+                        break;
+
+                    auto caller = call_stack.top();
+                    caller->children.push_back(curr);
+                    curr = nullptr;
+                    break;
+                }
+
+                if (c == ' ' || c == ')') {
+                    auto caller = call_stack.top();
+                    caller->children.push_back(curr);
+                    sym_stack.push(func_arg);
+                    curr = nullptr;
+                    break;
+                }
+
+                curr->value += c;
+                break;
         }
+
+        prev = c;
+
+        if (stream.eof())
+            break;
+    }
+
+    std::cout << "sym_stack" << std::endl;
+    while(!sym_stack.empty()) {
+        std::cout << sym_stack.top() << std::endl;
+        sym_stack.pop();
     }
 
     return ast;

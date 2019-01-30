@@ -17,8 +17,8 @@ void AstCommand::run(Config* config) {
         // Expect 3
         "(+ 1 2)",
 
-        // // Expect 3
-        // "+ 1 2",
+        // Expect 3
+        "+ 1 2",
 
         // // Expect Unmatched Bracket Error
         // "+ 1 2 )",
