@@ -1,6 +1,9 @@
 #pragma once
 
 #include <string>
+#include <vector>
+#include <memory>
+#include <iostream>
 
 namespace yali {
 namespace ast {
@@ -12,20 +15,24 @@ enum AstNodeType {
 
 class AstNode {
 public:
-    AstNode* left;
-    AstNode* right;
+    std::vector<AstNode*> children;
     AstNodeType type;
+    std::string value;
+
+    AstNode(AstNodeType type, std::string value): type{type}, value{value} {}
 };
+
+std::ostream& operator<<(std::ostream& out, AstNode& node);
 
 class AbstractSyntaxTree {
 public:
     AstNode* root;
 
-    AbstractSyntaxTree();
-    ~AbstractSyntaxTree();
+    AbstractSyntaxTree() {}
+    ~AbstractSyntaxTree() {}
 };
 
-AbstractSyntaxTree* parse(std::string);
+std::unique_ptr<AbstractSyntaxTree> parse(std::istream &);
 
 }
 }

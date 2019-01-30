@@ -10,5 +10,8 @@ cc_library(
         "cmd_ast.cpp",
         "cmd_help.cpp",
     ],
+    deps = [
+        "//ast:ast",
+    ],
     visibility = ["//visibility:public"],
 )
