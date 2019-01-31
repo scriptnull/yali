@@ -11,14 +11,26 @@ void AstCommand::run(Config* config) {
     std::cout << "Building Abstact Syntax Tree" << std::endl;
 
     std::vector<std::string> strs = {
-        // Expect 3
-        "(+ 1 2 )",
+        // // Expect 3
+        // "(+ 1 2 )",
 
-        // Expect 3
-        "(+ 1 2)",
+        // // Expect 3
+        // "(+ 1 2)",
 
-        // Expect 3
-        "+ 1 2",
+        // // Expect 3
+        // "+ 1 2",
+
+        // Expect 6
+        // "(+ 1 (+ 2 3))",
+
+        // Expect 6
+        // "(+ 1 2 3 )",
+
+        // // Expect 6
+        // "(+ 1 2 3)",
+
+        // // Expect 6
+        // "+ 1 2 3",
 
         // // Expect Unmatched Bracket Error
         // "+ 1 2 )",
@@ -32,7 +44,7 @@ void AstCommand::run(Config* config) {
 
             std::cout << "ast for " << s << std::endl;
             yali::ast::traversal::level_order(ast->root, [](yali::ast::AstNode* node) {
-                std::cout << *node;
+                std::cout << node;
             });
         } catch (std::runtime_error & e) {
             std::cerr << e.what() << std::endl;

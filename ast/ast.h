@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <iostream>
+#include <stack>
 
 namespace yali {
 namespace ast {
@@ -22,7 +23,7 @@ public:
     AstNode(AstNodeType type, std::string value): type{type}, value{value} {}
 };
 
-std::ostream& operator<<(std::ostream& out, AstNode& node);
+std::ostream& operator<<(std::ostream& out, AstNode* node);
 
 class AbstractSyntaxTree {
 public:
@@ -32,6 +33,7 @@ public:
     ~AbstractSyntaxTree() {}
 };
 
+template <typename T> void print_stack(std::string msg, std::stack<T> & st);
 std::unique_ptr<AbstractSyntaxTree> parse(std::istream &);
 
 }

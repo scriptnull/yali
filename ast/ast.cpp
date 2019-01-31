@@ -1,17 +1,16 @@
 #include "ast.h"
-#include <stack>
 #include <exception>
 #include <unordered_map>
 
 namespace yali {
 namespace ast {
 
-std::ostream& operator<<(std::ostream& out, AstNode& node) {
+std::ostream& operator<<(std::ostream& out, AstNode* node) {
     std::cout << "!----!" << std::endl;
-    std::cout << "Value = " << node.value << std::endl;
+    std::cout << "Value = " << node->value << std::endl;
 
     std::cout << "NodeType = ";
-    switch (node.type) {
+    switch (node->type) {
         case AstNodeType::Func:
             std::cout << "Func" << std::endl;
             break;
@@ -97,9 +96,13 @@ std::unique_ptr<AbstractSyntaxTree> parse(std::istream & stream) {
     AstNode* curr = nullptr;
     while (true) {
         stream.get(c);
+        
+        std::cout << "c = " << c << " goes to ";
 
         switch (sym_stack.top()) {
             case blank:
+                std::cout << "inside blank" << std::endl;
+
                 if (c == '(') {
                     sym_stack.push(open_brac);
                     break;
@@ -107,9 +110,12 @@ std::unique_ptr<AbstractSyntaxTree> parse(std::istream & stream) {
                 
                 // fallthrough
             case open_brac:
+                std::cout << "inside open_brac" << std::endl;
+                
                 if (curr == nullptr) {
                     curr = new AstNode{AstNodeType::Func, std::string{c}};
-                    ast->root = curr;
+                    if (ast->root == nullptr)
+                        ast->root = curr;
                     break;
                 }
 
@@ -122,7 +128,36 @@ std::unique_ptr<AbstractSyntaxTree> parse(std::istream & stream) {
 
                 curr->value += c;
                 break;
+            case close_brac:
+                std::cout << "inside close_brac" << std::endl;
+
+                // Remove symbols till matching bracket
+                while (!sym_stack.empty() && (sym_stack.top() != open_brac)) {
+                    sym_stack.pop();
+                }
+
+                // Remove open_brac
+                if (!sym_stack.empty())
+                    sym_stack.pop();
+
+                // print_stack<SymType>("sym_table", sym_stack);
+                // print_stack<AstNode*>("call_stack", call_stack);
+
+                if (call_stack.size() >= 2) {
+                    auto child = call_stack.top();
+                    call_stack.pop();
+
+                    auto parent = call_stack.top();
+                    parent->children.push_back(child);
+                }
+
+                // print_stack<SymType>("sym_table", sym_stack);
+                // print_stack<AstNode*>("call_stack", call_stack);
+
+                break;
             case func_name:
+                std::cout << "inside func_name" << std::endl;
+                
                 if (curr == nullptr) {
                     curr = new AstNode{AstNodeType::Data, std::string{c}};
                     break;
@@ -139,21 +174,27 @@ std::unique_ptr<AbstractSyntaxTree> parse(std::istream & stream) {
                 curr->value += c;
                 break;
             case func_arg:
-                std::cout << "c = " << c << " eof = " << stream.eof() << std::endl;
-                if (curr == nullptr) {
-                    curr = new AstNode{AstNodeType::Data, std::string{c}};
+                std::cout << "inside func_arg" << std::endl;
+                
+                if (c == '(') {
+                    sym_stack.push(open_brac);
+                    curr = nullptr;
                     break;
                 }
 
                 if (c == ')') {
-                    // Remove till matching bracket
-                    while (!sym_stack.empty() && (sym_stack.top() != open_brac)) {
-                        sym_stack.pop();
+                    if (curr != nullptr) {
+                        auto caller = call_stack.top();
+                        caller->children.push_back(curr);
+                        sym_stack.push(close_brac);
+                        curr = nullptr;
                     }
+                    break;
+                }
 
-                    // Remove open_brac
-                    if (!sym_stack.empty())
-                        sym_stack.pop();
+                if (curr == nullptr) {
+                    curr = new AstNode{AstNodeType::Data, std::string{c}};
+                    break;
                 }
 
                 if (stream.eof()) {
@@ -166,7 +207,7 @@ std::unique_ptr<AbstractSyntaxTree> parse(std::istream & stream) {
                     break;
                 }
 
-                if (c == ' ' || c == ')') {
+                if (c == ' ') {
                     auto caller = call_stack.top();
                     caller->children.push_back(curr);
                     sym_stack.push(func_arg);
@@ -184,13 +225,28 @@ std::unique_ptr<AbstractSyntaxTree> parse(std::istream & stream) {
             break;
     }
 
-    std::cout << "sym_stack" << std::endl;
-    while(!sym_stack.empty()) {
-        std::cout << sym_stack.top() << std::endl;
-        sym_stack.pop();
-    }
+    print_stack<SymType>("sym_table", sym_stack);
+    print_stack<AstNode*>("call_stack", call_stack);
 
     return ast;
+}
+
+template <typename T> void print_stack(std::string msg, std::stack<T> & st) {
+    std::stack<T> backup;
+    std::cout << msg << std::endl;
+    std::cout << "*********" << std::endl;
+    while(!st.empty()) {
+        std::cout << st.top() << std::endl;
+        std::cout << "----------" << std::endl;
+        backup.push(st.top());
+        st.pop();
+    }
+
+    while(!backup.empty()) {
+        st.push(backup.top());
+        backup.pop();
+    }
+    std::cout << "*********" << std::endl;
 }
 
 }
