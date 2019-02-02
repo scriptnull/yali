@@ -75,3 +75,17 @@ which renders on Markdown documents like
 Preferred often for [lightweight parsers](http://norvig.com/lispy.html).
 
 `(+ 4 (- 6 5) (+ 2 3))` translates to `[+, 4, [-, 6, 5], [+, 2, 3]]`
+
+## Contributing
+Yes, please!
+
+- Suggest features and report bugs on the [issue tracker](https://github.com/scriptnull/yali/issues)
+- Refactor code to remove memory leaks
+- Write more tests
+- Code review to help improve the existing code
+
+If you need help, feel free to contact [me](https://vishnubharathi.codes/).
+
+## License
+
+MIT License - see [`LICENSE`](LICENSE) for more details
