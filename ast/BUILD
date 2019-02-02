@@ -8,7 +8,9 @@ cc_library(
     srcs = [
         "ast.cpp",
         "traversal/level_order.cpp",
+        "traversal/pre_order.cpp",
         "serializer/markdown_level_table.cpp",
+        "serializer/graphviz.cpp",
     ],
     visibility = ["//visibility:public"],
 )

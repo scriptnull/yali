@@ -18,6 +18,11 @@ public:
     std::ostream& serialize(std::ostream&, std::unique_ptr<yali::ast::AbstractSyntaxTree> const&);
 };
 
+class GraphvizSerializer: public Serializer {
+public:    
+    std::ostream& serialize(std::ostream&, std::unique_ptr<yali::ast::AbstractSyntaxTree> const&);
+};
+
 }
 }
 }

@@ -41,9 +41,10 @@ void AstCommand::run(Config* config) {
             
             auto ast = yali::ast::parse(ss);
 
-            yali::ast::serializer::MarkdownLevelTableSerializer fmt;
+            yali::ast::serializer::GraphvizSerializer fmt;
 
             fmt.serialize(std::cout, ast);
+
         } catch (std::runtime_error & e) {
             std::cerr << e.what() << std::endl;
         }
