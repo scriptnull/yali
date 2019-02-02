@@ -29,7 +29,7 @@ std::ostream& ArraySquareSerializer::serialize(std::ostream& out, std::unique_pt
         rep_map[node] = rep;
     });
 
-    out << rep_map.at(tree->root);
+    out << rep_map.at(tree->root) << std::endl;
 
     return out;
 }
