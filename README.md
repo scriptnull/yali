@@ -2,6 +2,11 @@
 
 > Yet Another Lisp
 
+## Goals
+1. Embeddable Lisp Interpreter.
+1. Tool for learning (about Lisp, ASTs, Dialects, etc.)
+1. Multiple Lisp Dialect support.
+1. Modular API with documentation.
 
 ## Requirements
 
