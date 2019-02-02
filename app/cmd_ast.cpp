@@ -2,14 +2,13 @@
 #include "command.h"
 #include "ast/ast.h"
 #include "ast/traversal/traversal.h"
+#include "ast/serializer/serializer.h"
 #include <sstream>
 
 namespace yali {
 namespace app {
 
 void AstCommand::run(Config* config) {
-    std::cout << "Building Abstact Syntax Tree" << std::endl;
-
     std::vector<std::string> strs = {
         // // Expect 3
         // "(+ 1 2 )",
@@ -21,7 +20,7 @@ void AstCommand::run(Config* config) {
         // "+ 1 2",
 
         // Expect 6
-        // "(+ 1 (+ 2 3))",
+        "(+ 1 (+ 2 3))",
 
         // Expect 6
         // "(+ 1 2 3 )",
@@ -42,16 +41,13 @@ void AstCommand::run(Config* config) {
             
             auto ast = yali::ast::parse(ss);
 
-            std::cout << "ast for " << s << std::endl;
-            yali::ast::traversal::level_order(ast->root, [](yali::ast::AstNode* node) {
-                std::cout << node;
-            });
+            yali::ast::serializer::MarkdownLevelTableSerializer fmt;
+
+            fmt.serialize(std::cout, ast);
         } catch (std::runtime_error & e) {
             std::cerr << e.what() << std::endl;
         }
     }
-
-    std::cout << "AST built successfully" << std::endl;
 }
 
 }
