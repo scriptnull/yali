@@ -23,6 +23,11 @@ public:
     std::ostream& serialize(std::ostream&, std::unique_ptr<yali::ast::AbstractSyntaxTree> const&);
 };
 
+class ArraySquareSerializer: public Serializer {
+public:    
+    std::ostream& serialize(std::ostream&, std::unique_ptr<yali::ast::AbstractSyntaxTree> const&);
+};
+
 }
 }
 }

@@ -20,7 +20,9 @@ void AstCommand::run(Config* config) {
         // "+ 1 2",
 
         // Expect 6
-        "(+ 1 (+ 2 3))",
+        // "(+ 1 (+ 2 3))",
+
+        "(+ 4 (+ 6 5) (+ 2 3))",
 
         // Expect 6
         // "(+ 1 2 3 )",
@@ -30,6 +32,8 @@ void AstCommand::run(Config* config) {
 
         // // Expect 6
         // "+ 1 2 3",
+
+        // "(first (list 1 (+ 2 3) 9))",
 
         // // Expect Unmatched Bracket Error
         // "+ 1 2 )",
@@ -41,7 +45,7 @@ void AstCommand::run(Config* config) {
             
             auto ast = yali::ast::parse(ss);
 
-            yali::ast::serializer::GraphvizSerializer fmt;
+            yali::ast::serializer::ArraySquareSerializer fmt;
 
             fmt.serialize(std::cout, ast);
 

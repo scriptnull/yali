@@ -13,6 +13,8 @@ void level_order(AstNode* root, std::function<void(std::vector<AstNode*>, int)> 
 
 void pre_order(AstNode* root, std::function<void(AstNode*)> callback);
 
+void post_order(AstNode* root, std::function<void(AstNode*)> callback);
+
 }
 }
 }
