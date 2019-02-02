@@ -1,4 +1,4 @@
-.PHONY: run build clean app ast
+.PHONY: run build clean app ast build-graph
 
 run:
 	bazel build //:yali --verbose_failures && ./bazel-bin/yali
@@ -14,3 +14,6 @@ app:
 
 ast:
 	bazel build //ast:ast
+
+build-graph:
+	bash -c "xdot <(bazel query --nohost_deps --noimplicit_deps 'deps(//:yali)' --output graph)"
