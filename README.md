@@ -3,7 +3,7 @@
 > Yet Another Lisp
 
 ## Goals
-1. Embeddable Lisp Interpreter.
+1. Embeddable Lisp Parser.
 1. Tool for learning (about Lisp, ASTs, Dialects, etc.)
 1. Multiple Lisp Dialect support.
 1. Modular API with documentation.
@@ -20,3 +20,58 @@ Option Dev Dependencies:
     ```bash
     sudo apt update && sudo apt install graphviz xdot
     ```
+
+## AST Serializers
+Yali aims to be a tool to learn about Lisp and ASTs. Hence it provides serializers that output AST in different form.
+
+### Graphviz
+
+`(+ 4 (- 6 5) (+ 2 3))` translates to graphviz language
+
+```
+digraph G { 
+    1[label="+"]
+    2[label="4"]
+    3[label="-"]
+    4[label="6"]
+    5[label="5"]
+    6[label="+"]
+    7[label="2"]
+    8[label="3"]
+    1 -> 2
+    1 -> 3
+    1 -> 6
+    3 -> 4
+    3 -> 5
+    6 -> 7
+    6 -> 8
+}
+```
+
+which could be used with tools like [Webgraphviz](http://www.webgraphviz.com/) to get a graphic like
+
+![image](https://user-images.githubusercontent.com/4211715/52170132-a8971100-276a-11e9-8ef3-b4cfdb494fb6.png)
+
+### Markdown Level Table
+`(+ 4 (- 6 5) (+ 2 3))` translates to markdown table
+
+```
+| Level | Nodes |
+|------|------|
+| 1 | + |
+| 2 | 4 - + |
+| 3 | 6 5 2 3 |
+```
+
+which renders on Markdown documents like
+
+| Level | Nodes |
+|------|------|
+| 1 | + |
+| 2 | 4 - + |
+| 3 | 6 5 2 3 |
+
+### Array Square
+Preferred often for [lightweight parsers](http://norvig.com/lispy.html).
+
+`(+ 4 (- 6 5) (+ 2 3))` translates to `[+, 4, [-, 6, 5], [+, 2, 3]]`
