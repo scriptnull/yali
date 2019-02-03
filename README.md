@@ -2,6 +2,8 @@
 
 > Yet Another Lisp
 
+![license](https://img.shields.io/github/license/scriptnull/yali.svg?style=flat-square) [![first-timers-only](https://img.shields.io/badge/first--timers--only-friendly-blue.svg?style=flat-square)](https://www.firsttimersonly.com/)
+
 ## Goals
 1. Embeddable Lisp Parser.
 1. Tool for learning (about Lisp, ASTs, Dialects, etc.)
