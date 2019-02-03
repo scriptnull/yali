@@ -9,49 +9,30 @@ namespace yali {
 namespace app {
 
 void AstCommand::run(Config* config) {
-    std::vector<std::string> strs = {
-        // // Expect 3
-        // "(+ 1 2 )",
+    while (true) {
+        std::cout << "> ";
+        
+        std::string src;
+        std::getline(std::cin, src);
 
-        // // Expect 3
-        // "(+ 1 2)",
+        if (src == "exit" || src == "(exit)")
+            break;
 
-        // // Expect 3
-        // "+ 1 2",
+        std::istringstream ss{src};
+        handle_input(ss);
+    }
+}
 
-        // Expect 6
-        // "(+ 1 (+ 2 3))",
+void AstCommand::handle_input(std::istream& stream) {
+    try {
+        auto ast = yali::ast::parse(stream);
 
-        "(+ 4 (+ 6 5) (+ 2 3))",
+        yali::ast::serializer::ArraySquareSerializer fmt;
 
-        // Expect 6
-        // "(+ 1 2 3 )",
+        fmt.serialize(std::cout, ast);
 
-        // // Expect 6
-        // "(+ 1 2 3)",
-
-        // // Expect 6
-        // "+ 1 2 3",
-
-        // "(first (list 1 (+ 2 3) 9))",
-
-        // // Expect Unmatched Bracket Error
-        // "+ 1 2 )",
-    };
-
-    for (auto s: strs) {
-        try {
-            std::istringstream ss{s};
-            
-            auto ast = yali::ast::parse(ss);
-
-            yali::ast::serializer::ArraySquareSerializer fmt;
-
-            fmt.serialize(std::cout, ast);
-
-        } catch (std::runtime_error & e) {
-            std::cerr << e.what() << std::endl;
-        }
+    } catch (std::runtime_error & e) {
+        std::cerr << e.what() << std::endl;
     }
 }
 

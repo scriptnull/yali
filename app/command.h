@@ -17,6 +17,7 @@ public:
 class AstCommand : public Command {
 public:
     void run(Config* config) override;
+    void handle_input(std::istream&);
 };
 
 }
