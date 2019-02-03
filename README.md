@@ -7,8 +7,11 @@
 ## Goals
 1. Embeddable Lisp Parser.
 1. Tool for learning (about Lisp, ASTs, Dialects, etc.)
-1. Multiple Lisp Dialect support.
 1. Modular API with documentation.
+
+Eventual goals:
+1. Multiple Lisp Dialect support.
+1. Plug and play Interpreters.
 
 ## Requirements
 
