@@ -55,7 +55,7 @@ digraph G {
 
 which could be used with tools like [Webgraphviz](http://www.webgraphviz.com/) to get a graphic like
 
-![image](https://user-images.githubusercontent.com/4211715/52170132-a8971100-276a-11e9-8ef3-b4cfdb494fb6.png)
+![image](/images/image1.png)
 
 ### Markdown Level Table
 `(+ 4 (- 6 5) (+ 2 3))` translates to markdown table
