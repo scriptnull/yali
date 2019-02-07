@@ -39,7 +39,7 @@ Yali aims to be a tool to learn about Lisp and ASTs. Hence it provides serialize
 `(+ 4 (- 6 5) (+ 2 3))` translates to graphviz language
 
 ```
-digraph G { 
+digraph G {
     1[label="+"]
     2[label="4"]
     3[label="-"]
@@ -95,6 +95,11 @@ Yes, please!
 - Code review to help improve the existing code
 
 If you need help, feel free to contact [me](https://vishnubharathi.codes/).
+
+## Artwork
+Yali is a [mythical creature portrayed as part lion, part elephant and part horse](https://en.wikipedia.org/wiki/Yali_(mythology)) - this acted as the inspiration for the artwork.
+
+Yali's artwork was designed and created by [Vasanth Selvam](https://dribbble.com/11CS103) and is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>. Check `images` directory for more variations of the artwork.
 
 ## License
 
